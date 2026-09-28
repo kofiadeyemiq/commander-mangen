@@ -80,8 +80,10 @@ function randomDescription(rand: () => number): { text: string; dangerous: strin
 }
 
 test('random dot/quote-prefixed words at wrap boundaries stay valid roff and stay visible', (t) => {
-  if (!hasGroff && !hasMandoc) {
-    t.skip('neither groff nor mandoc is installed on this machine; cannot verify roff validity');
+  // Visibility is checked against `mandoc -T ascii` output, so mandoc is
+  // required here even when groff is available for the lint half.
+  if (!hasMandoc) {
+    t.skip('mandoc is not installed; install it (e.g. `apt-get install mandoc`) to run this check');
     return;
   }
 
