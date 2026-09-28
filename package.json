@@ -14,10 +14,10 @@
     "documentation"
   ],
   "license": "MIT",
-  "author": "__AUTHOR__",
+  "author": "kofiadeyemiq",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/__GH_OWNER__/commander-mangen.git"
+    "url": "git+https://github.com/kofiadeyemiq/commander-mangen.git"
   },
   "type": "module",
   "engines": {
