@@ -1,0 +1,21 @@
+.TH "TOOL-SERVE" "1" "September 28, 2026" "tool 2.3.1" "User Commands"
+.SH "NAME"
+tool\-serve \- run the dev server
+.SH "SYNOPSIS"
+\fBtool serve\fR [\fIoptions\fR]
+.SH "DESCRIPTION"
+run the dev server
+.SH "OPTIONS"
+.TP
+\fB\-c, \-\-config <path>\fR
+Path to a config file; the default loader looks in the current
+directory for .toolrc then walks up to home, and when missing it reads
+\&.env instead of failing loudly (default: ".toolrc")
+.TP
+\fB\-h, \-\-help\fR
+display help for command
+.SH "SEE ALSO"
+.BR tool (1),
+.BR tool\-build (1),
+.BR tool\-deploy (1),
+.BR tool\-lint (1)

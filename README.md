@@ -247,8 +247,13 @@ guard (`\&`), since a line starting with `.` or `'` would otherwise be read as a
 troff request; flag/command text (SYNOPSIS, the OPTIONS/COMMANDS term column) also
 gets every hyphen rendered as `\-`, per `man-pages(7)`. Prose is word-wrapped across
 source lines at ~70 columns for readability and to keep `mandoc -T lint` quiet about
-long source lines — this never changes rendered output, since roff reflows fill-mode
-text regardless of input line breaks.
+long source lines — this never changes rendered *output*, since roff reflows
+fill-mode text regardless of input line breaks. It does mean the leading-dot/quote
+guard has to be re-applied per output line, not once to the string as a whole:
+wrapping can move any word — not just the first — to the start of a line, and a
+guard that only checked the original string's start would miss a `.`/`'`-prefixed
+word that lands at a line break introduced by wrapping. `wrap()` re-runs that guard
+on every line it produces.
 
 ## Limitations
 

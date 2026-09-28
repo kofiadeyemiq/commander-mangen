@@ -19,6 +19,19 @@ function escapeBackslash(str: string): string {
 }
 
 /**
+ * Guard a single *output line* that starts with `.` or `'` — troff reads
+ * either as the start of a control line. `\&` is a zero-width character
+ * that defuses that without being visible in the rendered text.
+ *
+ * Must be applied per rendered line, not once to a whole (pre-wrap) string:
+ * `wrap()` can move any word to the start of a line, not just the first
+ * word of the original text.
+ */
+function guardLeadingDot(line: string): string {
+  return /^[.']/.test(line) ? `\\&${line}` : line;
+}
+
+/**
  * Escape free-form text for use inside a roff document (descriptions,
  * summaries, user-supplied section bodies).
  *
@@ -26,13 +39,16 @@ function escapeBackslash(str: string): string {
  * out with `.TP`/`.PP`, not raw line breaks, and a line break would risk
  * putting arbitrary text at the start of a line where it could be read as
  * a control line.
+ *
+ * This guards the start of the string it's given, which is correct for a
+ * single already-final output line (e.g. one line of preformatted text).
+ * For text that will be reflowed with `wrap()`, that's not enough by
+ * itself — `wrap()` re-applies the same guard to every line it produces.
  */
 export function escapeText(str: string): string {
   const collapsed = str.replaceAll(/\s*\n\s*/g, ' ').trim();
   const escaped = escapeBackslash(collapsed);
-  // A line starting with `.` or `'` is a troff control line. `\&` is a
-  // zero-width character that defuses that without being visible.
-  return /^[.']/.test(escaped) ? `\\&${escaped}` : escaped;
+  return guardLeadingDot(escaped);
 }
 
 /**
@@ -84,12 +100,20 @@ export function pp(text: string): string {
  * Wrap running prose text across multiple *source* lines at `width`,
  * breaking only at existing spaces.
  *
- * Purely cosmetic: roff fills/reflows ordinary text at render time
- * regardless of input line breaks, so this never changes rendered output.
- * It exists to keep generated `.ps`/`.TP` bodies under the conventional
- * ~80-column source width (`mandoc -T lint` flags longer lines as a STYLE
- * warning). Never call this on a macro argument line (`.TH`, `.TP`'s own
- * term line, `.BR`, …) or on preformatted (`.nf`) content — those are
+ * Purely cosmetic as far as *filling* goes: roff reflows ordinary text at
+ * render time regardless of input line breaks, so breaking on spaces here
+ * never changes rendered output. It exists to keep generated `.PP`/`.TP`
+ * bodies under the conventional ~80-column source width (`mandoc -T lint`
+ * flags longer lines as a STYLE warning).
+ *
+ * It is NOT purely cosmetic with respect to leading `.`/`'`: moving a word
+ * to the start of a line can turn it into a troff control line, so every
+ * line this produces is re-guarded with the same leading-dot/quote escape
+ * `escapeText` applies to the string as a whole — including the first
+ * line, which is a harmless no-op if `text` was already escaped.
+ *
+ * Never call this on a macro argument line (`.TH`, `.TP`'s own term line,
+ * `.BR`, …) or on preformatted (`.nf`) content — those are
  * positional/verbatim, and a wrap there would change their meaning.
  */
 export function wrap(text: string, width = 70): string {
@@ -106,7 +130,7 @@ export function wrap(text: string, width = 70): string {
     }
   }
   if (current.length > 0) lines.push(current);
-  return lines.join('\n');
+  return lines.map(guardLeadingDot).join('\n');
 }
 
 /** Quote a `.TH` field, escaping any embedded double quote. */

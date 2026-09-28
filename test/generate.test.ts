@@ -11,7 +11,7 @@ const FIXED = { date: 'September 28, 2026' };
 test('generates one page per visible command, nested included', () => {
   const pages = generateManPages(kitchenSink, FIXED);
   const names = pages.map((p) => p.name).sort();
-  assert.deepEqual(names, ['tool', 'tool-build', 'tool-build-watch', 'tool-deploy', 'tool-lint']);
+  assert.deepEqual(names, ['tool', 'tool-build', 'tool-build-watch', 'tool-deploy', 'tool-lint', 'tool-serve']);
 });
 
 test('every page uses the requested section number', () => {

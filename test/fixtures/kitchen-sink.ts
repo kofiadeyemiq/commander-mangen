@@ -3,7 +3,11 @@
  * hidden command/option, required/optional/variadic arguments, choices,
  * defaults, an env-backed option, a negatable option, an executable
  * subcommand declaration, and description text with roff-dangerous
- * characters (a leading quote, a literal backslash, a literal dot).
+ * characters (a leading quote, a literal backslash, a literal dot) —
+ * including one (`serve`'s `--config`) long enough that a `.`-prefixed word
+ * ("`.env`") lands mid-sentence but still at the *start of a wrapped output
+ * line*, which is the case that actually broke roff escaping (regression
+ * for the wrap-then-escape-only-the-original-start bug).
  *
  * Exported without calling `.parse()`, per commander-mangen's contract.
  */
@@ -59,5 +63,20 @@ program
 // Executable subcommand: implemented as a separate `tool-deploy` binary.
 // commander never sees its options.
 program.command('deploy [target]', 'deploy the project (implemented as a separate executable)');
+
+// A long description with a `.`-prefixed word ("`.env`") positioned so that
+// word-wrapping (not the original string start) puts it at a line start.
+program
+  .command('serve')
+  .description('run the dev server')
+  .addOption(
+    new Option(
+      '-c, --config <path>',
+      'Path to a config file; the default loader looks in the current directory ' +
+        'for .toolrc then walks up to home, and when missing it reads .env instead ' +
+        'of failing loudly',
+    ).default('.toolrc'),
+  )
+  .action(() => {});
 
 program.commandsGroup('Commands:');

@@ -65,3 +65,29 @@ test('wrap does not split a single word longer than the width', () => {
 test('wrap on short text returns it unchanged (single line)', () => {
   assert.equal(wrap('short text', 70), 'short text');
 });
+
+test('regression: wrap guards a dot-prefixed word that lands at a line start mid-string', () => {
+  // Escaping only ever looked at the start of the *original* string. wrap()
+  // can move any word to the start of an output line, so a `.`-prefixed
+  // word deep inside a long description used to reach roff unguarded.
+  const escaped = escapeText(
+    'aaaa bbbb cccc dddd eeee ffff gggg hhhh .env instead of failing loudly',
+  );
+  const wrapped = wrap(escaped, 40);
+  const lines = wrapped.split('\n');
+  assert.ok(lines.length > 1, 'test is only meaningful if the text actually wraps');
+  for (const line of lines) {
+    assert.ok(!/^[.']/.test(line), `unguarded control-line start: "${line}"`);
+  }
+  assert.ok(wrapped.includes('\\&.env'), 'expected the wrapped .env to be guarded with \\&');
+});
+
+test('regression: wrap guards an apostrophe-prefixed word at a line start mid-string', () => {
+  const escaped = escapeText("aaaa bbbb cccc dddd eeee ffff gggg 'quoted' word");
+  const wrapped = wrap(escaped, 35);
+  const lines = wrapped.split('\n');
+  assert.ok(lines.length > 1, 'test is only meaningful if the text actually wraps');
+  for (const line of lines) {
+    assert.ok(!/^[.']/.test(line), `unguarded control-line start: "${line}"`);
+  }
+});
