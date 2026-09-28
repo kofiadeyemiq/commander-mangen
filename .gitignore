@@ -1,0 +1,4 @@
+node_modules
+dist
+smoke-tmp-*
+test/fixtures/named-export.generated.ts

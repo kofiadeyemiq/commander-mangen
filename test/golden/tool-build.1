@@ -1,0 +1,45 @@
+.TH "TOOL-BUILD" "1" "September 28, 2026" "tool 2.3.1" "User Commands"
+.SH "NAME"
+tool\-build, tool\-b \- build the project
+.SH "SYNOPSIS"
+\fBtool build|b\fR [\fIoptions\fR] <entry> [extra...] [\fIcommand\fR]
+.SH "DESCRIPTION"
+Build the project. Reads options from .toolrc if present.
+.SH "ARGUMENTS"
+.TP
+\fB<entry>\fR
+entry file
+.TP
+\fB[extra...]\fR
+additional source files
+.SH "OPTIONS"
+.TP
+\fB\-w, \-\-watch\fR
+watch for changes
+.TP
+\fB\-o, \-\-output <dir>\fR
+output directory (default: "dist")
+.TP
+\fB\-\-color\fR
+use color output (default: true)
+.TP
+\fB\-\-no\-color\fR
+disable color output
+.TP
+\fB\-f, \-\-format <type>\fR
+output format (choices: "esm", "cjs", "umd", default: "esm")
+.TP
+\fB\-\-token <token>\fR
+registry auth token (env: TOOL_TOKEN)
+.TP
+\fB\-h, \-\-help\fR
+display help for command
+.SH "COMMANDS"
+.TP
+\fBwatch|w\fR [options]
+Watch and rebuild on change
+.SH "SEE ALSO"
+.BR tool (1),
+.BR tool\-build\-watch (1),
+.BR tool\-deploy (1),
+.BR tool\-lint (1)

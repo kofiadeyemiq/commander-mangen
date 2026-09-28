@@ -1,0 +1,55 @@
+{
+  "name": "commander-mangen",
+  "version": "0.1.0",
+  "description": "Generate roff man pages from a commander.js Command tree, including subcommand options that help2man can't see.",
+  "keywords": [
+    "commander",
+    "man",
+    "manpage",
+    "man-page",
+    "roff",
+    "groff",
+    "cli",
+    "help2man",
+    "documentation"
+  ],
+  "license": "MIT",
+  "author": "__AUTHOR__",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/__GH_OWNER__/commander-mangen.git"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "commander-mangen": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "node --test \"test/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && chmod +x dist/cli.js",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build && npm run test:dist",
+    "test:dist": "node --test test/smoke.mjs"
+  },
+  "peerDependencies": {
+    "commander": "^15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "commander": "^15.0.0",
+    "typescript": "^5.7.0"
+  }
+}

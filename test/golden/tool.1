@@ -1,0 +1,32 @@
+.TH "TOOL" "1" "September 28, 2026" "tool 2.3.1" "User Commands"
+.SH "NAME"
+tool \- A 'demo' tool. See tool.config.json for defaults.
+.SH "SYNOPSIS"
+\fBtool\fR [\fIoptions\fR] [\fIcommand\fR]
+.SH "DESCRIPTION"
+A 'demo' tool. See tool.config.json for defaults.
+.SH "OPTIONS"
+.TP
+\fB\-V, \-\-version\fR
+output the version number
+.TP
+\fB\-h, \-\-help\fR
+display help for command
+.SH "COMMANDS"
+.TP
+\fBbuild|b\fR [options] <entry> [extra...]
+build the project
+.TP
+\fBlint\fR [options]
+\&'Lint the project.' Uses a backslash path separator like C:\eUsers
+on Windows.
+.TP
+\fBdeploy\fR [target]
+deploy the project (implemented as a separate executable)
+.TP
+\fBhelp\fR [command]
+display help for command
+.SH "SEE ALSO"
+.BR tool\-build (1),
+.BR tool\-deploy (1),
+.BR tool\-lint (1)
